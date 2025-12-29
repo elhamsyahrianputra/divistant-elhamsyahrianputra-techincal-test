@@ -1,0 +1,20 @@
+{
+  "name": "divistant-elhamsyahrianputra-techincal-test",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Elham Syahrian Putra",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && bun run start:dev",
+    "dev:frontend": "cd frontend && bun run dev",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "prisma:studio": "cd backend && npx prisma studio",
+    "seed": "cd backend && npm run prisma/seed.ts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
