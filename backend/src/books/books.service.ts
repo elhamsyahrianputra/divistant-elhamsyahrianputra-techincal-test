@@ -4,6 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from 'prisma/generated/client';
+import slugify from 'slugify';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
@@ -15,7 +16,14 @@ export class BooksService {
   async create(request: CreateBookDto) {
     try {
       return await this.prisma.book.create({
-        data: { ...request },
+        data: {
+          ...request,
+          slug: `${slugify(request.title, {
+            lower: true,
+            strict: true,
+            trim: true,
+          })}-${Date.now()}`,
+        },
       });
     } catch (error) {
       if (
@@ -40,7 +48,19 @@ export class BooksService {
     });
 
     if (!book) {
-      throw new NotFoundException(`Book with ID '${id}' not found`);
+      throw new NotFoundException(`Book with ID: '${id}' not found`);
+    }
+
+    return book;
+  }
+
+  async getBySlug(slug: string) {
+    const book = await this.prisma.book.findUnique({
+      where: { slug },
+    });
+
+    if (!book) {
+      throw new NotFoundException(`Book with Slug: '${slug}' not found`);
     }
 
     return book;

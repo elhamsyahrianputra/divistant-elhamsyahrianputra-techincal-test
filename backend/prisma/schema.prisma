@@ -51,7 +51,7 @@ model UserRole {
 
 model Book {
   id           String       @id @default(uuid())
-  slug         String
+  slug         String       @unique
   title        String
   isbn         String?      @unique
   published_at DateTime?

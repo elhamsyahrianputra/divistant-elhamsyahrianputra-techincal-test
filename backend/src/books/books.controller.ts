@@ -46,13 +46,21 @@ export class BooksController {
     };
   }
 
+  @Get('slug/:slug')
+  async findOneBySlug(@Param('slug') slug: string) {
+    return {
+      message: 'Book retreived successfully',
+      result: await this.booksService.getBySlug(slug),
+    };
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+  async update(@Param('id') id: string, @Body() request: UpdateBookDto) {
     return {
       message: 'Book updated successfullyy',
-      data: this.booksService.update(id, updateBookDto),
+      data: this.booksService.update(id, request),
     };
   }
 

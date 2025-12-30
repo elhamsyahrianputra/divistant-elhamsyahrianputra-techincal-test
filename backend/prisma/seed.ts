@@ -1,5 +1,6 @@
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import * as bcrypt from 'bcrypt';
+import slugify from 'slugify';
 import { PrismaClient } from './generated/client';
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -73,18 +74,21 @@ async function main() {
   const books = [
     {
       title: 'The Pragmatic Programmer',
+      slug: `${slugify('The Pragmatic Programmer', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-0135957059',
       description: 'Your journey to mastery. 20th Anniversary Edition.',
       published_at: new Date('2019-09-13'),
     },
     {
       title: 'Clean Code',
+      slug: `${slugify('Clean Code', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-0132350884',
       description: 'A Handbook of Agile Software Craftsmanship.',
       published_at: new Date('2008-08-01'),
     },
     {
       title: 'You Dont Know JS Yet',
+      slug: `${slugify('You Dont Know JS Yet', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-1491904244',
       description: 'Get started with the core of JavaScript.',
       published_at: new Date('2020-01-01'),
