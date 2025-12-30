@@ -19,7 +19,33 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  roles UserRole[]
+
   @@map("users")
+}
+
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@map("user_role")
 }
 
 model Book {

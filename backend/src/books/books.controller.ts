@@ -41,7 +41,7 @@ export class BooksController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+  async update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
     return {
       message: 'Book updated successfullyy',
       data: this.booksService.update(id, updateBookDto),
@@ -49,7 +49,7 @@ export class BooksController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     this.booksService.remove(id);
     return {
       message: 'Book deleted successfully',
