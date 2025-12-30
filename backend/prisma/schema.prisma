@@ -45,19 +45,50 @@ model UserRole {
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
 
+  @@unique([userId, roleId])
   @@map("user_role")
 }
 
 model Book {
-  id           String    @id @default(uuid())
+  id           String       @id @default(uuid())
+  slug         String
   title        String
-  isbn         String?   @unique
+  isbn         String?      @unique
   published_at DateTime?
   coverUrl     String?
   pages        Int?
   description  String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  bookAuthors  BookAuthor[]
 
   @@map("books")
+}
+
+model Author {
+  id          String       @id @default(uuid())
+  slug        String
+  name        String
+  birthPlace  String?
+  birthDate   DateTime?
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  bookAuthors BookAuthor[]
+
+  @@map("authors")
+}
+
+model BookAuthor {
+  id        String   @id @default(uuid())
+  bookId    String
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@unique([bookId, authorId])
+  @@map("book_author")
 }
