@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   ArrayNotEmpty,
   IsArray,
   IsDate,
@@ -52,4 +53,10 @@ export class CreateBookDto {
   @ArrayNotEmpty()
   @IsUUID('4', { each: true })
   authors: string[];
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayMinSize(3)
+  @IsUUID('4', { each: true })
+  genres: string[];
 }

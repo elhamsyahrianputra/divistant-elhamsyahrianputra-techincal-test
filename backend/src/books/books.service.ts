@@ -16,6 +16,10 @@ export class BooksService {
   async create(request: CreateBookDto) {
     try {
       return await this.prisma.book.create({
+        include: {
+          authors: true,
+          genres: true,
+        },
         data: {
           ...request,
           slug: `${slugify(request.title, {
@@ -26,6 +30,11 @@ export class BooksService {
           authors: {
             connect: request.authors.map((author) => {
               return { id: author };
+            }),
+          },
+          genres: {
+            connect: request.genres.map((genre) => {
+              return { id: genre };
             }),
           },
         },
@@ -83,12 +92,18 @@ export class BooksService {
         where: { id },
         include: {
           authors: true,
+          genres: true,
         },
         data: {
           ...request,
           authors: {
             set: request.authors?.map((author) => {
               return { id: author };
+            }),
+          },
+          genres: {
+            set: request.genres?.map((genre) => {
+              return { id: genre };
             }),
           },
         },
