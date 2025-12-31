@@ -8,12 +8,18 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Body() request: RegisterDto) {
-    return this.authService.register(request);
+  async register(@Body() request: RegisterDto) {
+    return {
+      message: 'Login successfully',
+      result: await this.authService.register(request),
+    };
   }
 
   @Post('/login')
-  login(@Body() request: LoginDto) {
-    return this.authService.login(request);
+  async login(@Body() request: LoginDto) {
+    return {
+      message: 'Register successfully',
+      result: await this.authService.login(request),
+    };
   }
 }
