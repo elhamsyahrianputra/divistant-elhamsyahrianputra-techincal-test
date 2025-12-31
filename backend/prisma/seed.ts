@@ -164,6 +164,42 @@ async function main() {
     });
   }
   console.log('Dummy books berhasil dibuat.');
+  // 7. Seed 100 Dummy Reviews
+  const allBooks = await prisma.book.findMany();
+  const allUsers = await prisma.user.findMany();
+  if (allBooks.length && allUsers.length) {
+    const reviewComments = [
+      'Sangat bagus!',
+      'Lumayan, tapi bisa lebih baik.',
+      'Tidak sesuai ekspektasi.',
+      'Rekomendasi untuk dibaca.',
+      'Biasa saja.',
+      'Luar biasa, sangat membantu!',
+      'Kurang menarik.',
+      'Penjelasan sangat jelas.',
+      'Buku favorit saya.',
+      'Cukup informatif.'
+    ];
+    for (let i = 0; i < 100; i++) {
+      const user = allUsers[Math.floor(Math.random() * allUsers.length)];
+      const book = allBooks[Math.floor(Math.random() * allBooks.length)];
+      const rating = Math.floor(Math.random() * 5) + 1;
+      const comment = Math.random() > 0.3 ? reviewComments[Math.floor(Math.random() * reviewComments.length)] : null;
+      try {
+        await prisma.review.create({
+          data: {
+            userId: user.id,
+            bookId: book.id,
+            rating,
+            comment,
+          },
+        });
+      } catch (e) {
+        // skip duplicate user-book review (unique constraint)
+      }
+    }
+    console.log('100 dummy reviews berhasil dibuat.');
+  }
 }
 
 main()

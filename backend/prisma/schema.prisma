@@ -19,7 +19,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  roles UserRole[]
+  roles   UserRole[]
+  reviews Review[]
 
   @@map("users")
 }
@@ -62,7 +63,8 @@ model Book {
   updatedAt   DateTime  @updatedAt
 
   authors Author[]
-  genres   Genre[]
+  genres  Genre[]
+  reviews Review[]
 
   @@map("books")
 }
@@ -75,9 +77,9 @@ model Author {
   birthDate   DateTime?
   description String?
   imageUrl    String?
-  
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   books Book[]
 
@@ -95,4 +97,20 @@ model Genre {
   books Book[]
 
   @@map("genres")
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  bookId    String
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@map("reviews")
 }
