@@ -23,6 +23,11 @@ export class BooksService {
             strict: true,
             trim: true,
           })}-${Date.now()}`,
+          authors: {
+            connect: request.authors.map((author) => {
+              return { id: author };
+            }),
+          },
         },
       });
     } catch (error) {
@@ -39,7 +44,11 @@ export class BooksService {
   }
 
   async getAll() {
-    return await this.prisma.book.findMany();
+    return await this.prisma.book.findMany({
+      include: {
+        authors: true,
+      },
+    });
   }
 
   async getById(id: string) {
@@ -67,12 +76,22 @@ export class BooksService {
   }
 
   async update(id: string, request: UpdateBookDto) {
-    await this.getById(id);
-
     try {
+      await this.getById(id);
+
       return await this.prisma.book.update({
         where: { id },
-        data: request,
+        include: {
+          authors: true,
+        },
+        data: {
+          ...request,
+          authors: {
+            set: request.authors?.map((author) => {
+              return { id: author };
+            }),
+          },
+        },
       });
     } catch (error) {
       if (
@@ -90,7 +109,7 @@ export class BooksService {
   async remove(id: string) {
     await this.getById(id);
 
-    return await this.prisma.book.delete({
+    await this.prisma.book.delete({
       where: { id },
     });
   }

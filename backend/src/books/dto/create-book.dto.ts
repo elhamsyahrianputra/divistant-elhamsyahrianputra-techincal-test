@@ -1,9 +1,14 @@
+import { Type } from 'class-transformer';
 import {
+  ArrayNotEmpty,
+  IsArray,
+  IsDate,
   IsInt,
-  IsISO8601,
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsUUID,
+  MaxDate,
 } from 'class-validator';
 
 export class CreateBookDto {
@@ -16,10 +21,18 @@ export class CreateBookDto {
   @IsString()
   isbn?: string;
 
+  // @IsOptional()
+  // @IsNotEmpty()
+  // @IsDateString()
+  // @MaxDate(new Date(new Date().setDate(new Date().getDate() - 1)), { message: "Tanggal maksimal yang diperbolehkan adalah kemarin", })
+  // publishedAt?: string;
+
   @IsOptional()
   @IsNotEmpty()
-  @IsISO8601()
-  published_at?: string;
+  @Type(() => Date) // ⬅️ PENTING
+  @IsDate()
+  @MaxDate(new Date())
+  publishedAt?: Date;
 
   @IsOptional()
   @IsNotEmpty()
@@ -34,4 +47,9 @@ export class CreateBookDto {
   @IsNotEmpty()
   @IsOptional()
   description?: string;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsUUID('4', { each: true })
+  authors: string[];
 }

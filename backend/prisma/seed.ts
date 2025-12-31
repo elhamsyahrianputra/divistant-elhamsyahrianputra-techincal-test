@@ -69,37 +69,98 @@ async function main() {
     },
   });
   console.log('Sample user member berhasil dibuat.');
+  // 4. Seed Authors
+  const authorData = [
+    { name: 'Andrew Hunt', imageUrl: null },
+    { name: 'Robert C. Martin', imageUrl: null },
+    { name: 'Kyle Simpson', imageUrl: null },
+  ];
 
-  // 4. Seed Dummy Books
+  const authors: Array<{ id: string; name: string; slug: string }> = [];
+  for (const a of authorData) {
+    const slug = `${slugify(a.name, { lower: true, strict: true, trim: true })}`;
+    const author = await prisma.author.upsert({
+      where: { slug },
+      update: {},
+      create: {
+        name: a.name,
+        slug,
+        imageUrl: a.imageUrl,
+      },
+    });
+    authors.push(author as any);
+  }
+  console.log('Authors berhasil dibuat.');
+
+  // 5. Seed Genres
+  const genreData = ['Programming', 'Software Engineering', 'JavaScript'];
+  const genres: Array<{ id: string; name: string }> = [];
+  for (const g of genreData) {
+    const slug = slugify(g, { lower: true, strict: true, trim: true });
+    const genre = await prisma.genre.upsert({
+      where: { name: g },
+      update: {},
+      create: { name: g, slug },
+    });
+    genres.push(genre as any);
+  }
+  console.log('Genres berhasil dibuat.');
+
+  // 6. Seed Dummy Books
   const books = [
     {
       title: 'The Pragmatic Programmer',
       slug: `${slugify('The Pragmatic Programmer', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-0135957059',
       description: 'Your journey to mastery. 20th Anniversary Edition.',
-      published_at: new Date('2019-09-13'),
+      publishedAt: new Date('2019-09-13'),
+      authorNames: ['Andrew Hunt'],
+      genreNames: ['Programming', 'Software Engineering'],
     },
     {
       title: 'Clean Code',
       slug: `${slugify('Clean Code', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-0132350884',
       description: 'A Handbook of Agile Software Craftsmanship.',
-      published_at: new Date('2008-08-01'),
+      publishedAt: new Date('2008-08-01'),
+      authorNames: ['Robert C. Martin'],
+      genreNames: ['Software Engineering'],
     },
     {
       title: 'You Dont Know JS Yet',
       slug: `${slugify('You Dont Know JS Yet', {lower: true, strict: true, trim: true})}-${Date.now()}`,
       isbn: '978-1491904244',
       description: 'Get started with the core of JavaScript.',
-      published_at: new Date('2020-01-01'),
+      publishedAt: new Date('2020-01-01'),
+      authorNames: ['Kyle Simpson'],
+      genreNames: ['JavaScript', 'Programming'],
     },
   ];
 
   for (const book of books) {
+    // prepare connect arrays for authors and genres
+    const connectAuthors = (book as any).authorNames?.map((name: string) => {
+      const found = authors.find((a) => a.name === name);
+      return found ? { id: found.id } : undefined;
+    }).filter(Boolean);
+
+    const connectGenres = (book as any).genreNames?.map((name: string) => {
+      const found = genres.find((g) => g.name === name);
+      return found ? { id: found.id } : undefined;
+    }).filter(Boolean);
+
     await prisma.book.upsert({
       where: { isbn: book.isbn },
       update: {},
-      create: book,
+      create: {
+        title: book.title,
+        slug: book.slug,
+        isbn: book.isbn,
+        description: book.description,
+        publishedAt: book.publishedAt,
+        authors: connectAuthors?.length ? { connect: connectAuthors } : undefined,
+        genres: connectGenres?.length ? { connect: connectGenres } : undefined,
+      },
     });
   }
   console.log('Dummy books berhasil dibuat.');

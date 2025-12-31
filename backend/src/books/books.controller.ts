@@ -39,7 +39,7 @@ export class BooksController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
     return {
       message: 'Book retreived successfully',
       result: await this.booksService.getById(id),
@@ -47,7 +47,7 @@ export class BooksController {
   }
 
   @Get('slug/:slug')
-  async findOneBySlug(@Param('slug') slug: string) {
+  async findBySlug(@Param('slug') slug: string) {
     return {
       message: 'Book retreived successfully',
       result: await this.booksService.getBySlug(slug),
@@ -60,7 +60,7 @@ export class BooksController {
   async update(@Param('id') id: string, @Body() request: UpdateBookDto) {
     return {
       message: 'Book updated successfullyy',
-      data: this.booksService.update(id, request),
+      result: await this.booksService.update(id, request),
     };
   }
 
@@ -68,7 +68,7 @@ export class BooksController {
   @Roles('admin')
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    this.booksService.remove(id);
+    await this.booksService.remove(id);
     return {
       message: 'Book deleted successfully',
     };
