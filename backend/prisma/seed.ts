@@ -135,6 +135,16 @@ async function main() {
       authorNames: ['Kyle Simpson'],
       genreNames: ['JavaScript', 'Programming'],
     },
+    // Tambahan buku dummy
+    ...Array.from({ length: 50 }).map((_, i) => ({
+      title: `Dummy Book ${i+1}`,
+      slug: `${slugify(`Dummy Book ${i+1}`, {lower: true, strict: true, trim: true})}-${Date.now()}`,
+      isbn: `DUMMY-ISBN-${i+1}`,
+      description: `Deskripsi buku dummy ke-${i+1}`,
+      publishedAt: new Date(2020, 0, 1 + i),
+      authorNames: [authors[i % authors.length].name],
+      genreNames: [genres[i % genres.length].name],
+    })),
   ];
 
   for (const book of books) {
