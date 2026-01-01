@@ -1,26 +1,29 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import type { ApiResponseSuccess } from "@/core/types/api.types";
 import type { QueryParams } from "@/core/types/pagination.types";
+import type { Book } from "@/features/book/types/book.types";
 import type { GenreRequest } from "../schemas/genre.schema";
 import { genreService } from "../services/genre.service";
+import type { Genre } from "../types/genre.types";
 
 export function useGenres(params?: QueryParams) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Genre[]>>({
     queryKey: ["genre", params],
     queryFn: () => genreService.getAll(params),
   });
 }
 
 export function useGenre(id: string) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Genre>>({
     queryKey: ["genre", id],
     queryFn: () => genreService.getById(id),
   });
 }
 
 export function useGenreBySlug(slug: string) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Genre>>({
     queryKey: ["genre", slug],
     queryFn: () => genreService.getBySlug(slug),
   });
@@ -31,7 +34,7 @@ export function useGenreBooks(
   params?: QueryParams,
   options?: any,
 ) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Book[]>>({
     queryKey: ["genre", genreId, "books", params],
     queryFn: () => genreService.getBooks(genreId, params),
     ...options,

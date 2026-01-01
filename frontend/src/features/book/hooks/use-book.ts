@@ -1,26 +1,28 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import type { ApiResponseSuccess } from "@/core/types/api.types";
 import type { QueryParams } from "@/core/types/pagination.types";
 import type { BookRequest } from "../schemas/book.schema";
 import { bookService } from "../services/book.services";
+import type { Book } from "../types/book.types";
 
 export function useBooks(params?: QueryParams) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Book[]>>({
     queryKey: ["book", params],
     queryFn: () => bookService.getAll(params),
   });
 }
 
 export function useBook(id: string) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Book>>({
     queryKey: ["book", id],
     queryFn: () => bookService.getById(id as string),
   });
 }
 
 export function useBookBySlug(slug: string) {
-  return useQuery({
+  return useQuery<ApiResponseSuccess<Book>>({
     queryKey: ["book", slug],
     queryFn: () => bookService.getBySlug(slug as string),
   });

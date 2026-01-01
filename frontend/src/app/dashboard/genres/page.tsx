@@ -17,7 +17,7 @@ export default function Page() {
     search: search || undefined,
     page,
     limit: 10,
-    include: "books",
+    includes: "books",
   });
 
   const handleSearch = (value: string) => {

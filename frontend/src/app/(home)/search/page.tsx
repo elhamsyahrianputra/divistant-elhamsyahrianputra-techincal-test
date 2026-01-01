@@ -4,7 +4,7 @@ import { Star } from "@solar-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Card } from "@/core/components/ui/card";
 import { Search } from "@/core/components/ui/forms";
 import { Pagination } from "@/core/components/ui/pagination/pagination";
@@ -12,7 +12,7 @@ import type { QueryParams } from "@/core/types/pagination.types";
 import { useBooks } from "@/features/book/hooks/use-book";
 import { useGenres } from "@/features/genre/hooks/use-genre";
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
@@ -191,5 +191,13 @@ export default function SearchPage() {
         )}
       </section>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-gray-50">Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }

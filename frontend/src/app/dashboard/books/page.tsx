@@ -17,7 +17,7 @@ export default function Page() {
     search: search || undefined,
     page,
     limit: 12,
-    include: "authors,genres",
+    includes: "authors,genres",
   });
 
   const handleSearch = (value: string) => {

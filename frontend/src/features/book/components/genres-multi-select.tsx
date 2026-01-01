@@ -4,12 +4,12 @@ import type { Control, FieldErrors } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { MultiSelect } from "@/core/components/ui/forms";
 import type { Genre } from "@/features/genre/types/genre.types";
-import type { UpdateBookRequest } from "../schemas/book.schema";
+import type { BookRequest } from "../schemas/book.schema";
 
 interface GenresMultiSelectProps {
-  control: Control<UpdateBookRequest>;
+  control: Control<BookRequest>;
   genres: Genre[] | undefined;
-  errors: FieldErrors<UpdateBookRequest>;
+  errors: FieldErrors<BookRequest>;
 }
 
 export function GenresMultiSelect({

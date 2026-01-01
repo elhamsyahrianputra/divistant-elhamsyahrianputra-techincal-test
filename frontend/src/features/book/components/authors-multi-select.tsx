@@ -4,12 +4,12 @@ import type { Control, FieldErrors } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { MultiSelect } from "@/core/components/ui/forms";
 import type { Author } from "@/features/author/types/author.types";
-import type { UpdateBookRequest } from "../schemas/book.schema";
+import type { BookRequest } from "../schemas/book.schema";
 
 interface AuthorsMultiSelectProps {
-  control: Control<UpdateBookRequest>;
-  authors: Author[] | undefined;
-  errors: FieldErrors<UpdateBookRequest>;
+  control: Control<BookRequest>;
+  authors: Author[];
+  errors: FieldErrors<BookRequest>;
 }
 
 export function AuthorsMultiSelect({
