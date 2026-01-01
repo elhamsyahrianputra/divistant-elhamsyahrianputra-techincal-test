@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -49,10 +50,13 @@ function UserNavbar() {
             className="flex items-center gap-2 font-bold text-lg text-primary transition-opacity hover:opacity-80"
             href="/"
           >
-            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary font-bold text-sm text-white">
-              B
-            </div>
-            <span className="hidden sm:inline">BookNest</span>
+            <Image
+              alt="Spacio Logo"
+              height={28}
+              src="/img/logo/logo-blue.svg"
+              width={28}
+            />
+            <span className="hidden sm:inline">Spacio</span>
           </Link>
 
           {/* Main Navigation */}
