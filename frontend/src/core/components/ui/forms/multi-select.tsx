@@ -108,10 +108,10 @@ export function MultiSelect<T extends SelectOption>({
           {/* Selected Items Container */}
           <div className="flex flex-wrap items-center gap-2">
             {selected.length > 0 ? (
-              selected.map((item) => (
+              selected.map((item, idx) => (
                 <div
                   className="inline-flex cursor-default items-center gap-1 rounded-md bg-primary-lighter px-2 py-1 font-medium text-primary text-sm"
-                  key={String(item[valueKey])}
+                  key={item[valueKey] !== undefined ? String(item[valueKey]) : `idx-${idx}`}
                 >
                   <span>{String(item[labelKey])}</span>
                   <span

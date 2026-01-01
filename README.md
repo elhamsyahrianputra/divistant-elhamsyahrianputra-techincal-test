@@ -1,5 +1,14 @@
 # Book Collection Management System
 
+## 🚀 Deployment Links
+
+**Frontend:**
+👉 [https://divistant-elhamsyahrianputra-techin.vercel.app/](https://divistant-elhamsyahrianputra-techin.vercel.app/)
+
+**Backend API:**
+👉 [https://divistant-elhamsyahrianputra-techincal-test-production.up.railway.app/api](https://divistant-elhamsyahrianputra-techincal-test-production.up.railway.app/api)
+
+
 Aplikasi pengelolaan koleksi buku dengan fitur CRUD lengkap, autentikasi JWT, dan sistem review. Dibangun menggunakan NestJS untuk backend dan Next.js untuk frontend.
 
 ## 📋 Table of Contents

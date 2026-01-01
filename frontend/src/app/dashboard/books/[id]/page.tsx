@@ -20,7 +20,9 @@ export default function Page() {
   const bookId = params.id as string;
 
   const { data: book } = useBook(bookId);
-  const { data: authors } = useAuthors();
+  const { data: authors } = useAuthors({
+    limit: 100
+  });
   const { data: genres } = useGenres();
   const { data: reviews } = useReviewAverage(bookId);
 
@@ -53,7 +55,7 @@ export default function Page() {
               <div className="flex items-center gap-x-1 rounded-xl bg-warning-lighter px-2 py-0.5">
                 <Star className="text-warning" size={14} weight="BoldDuotone" />
                 <span className="font-semibold text-sm">
-                  {reviews?.data.average}
+                  {reviews?.data.average.toFixed(1)}
                 </span>
               </div>
               <span className="ml-1 text-gray-400 text-xs">

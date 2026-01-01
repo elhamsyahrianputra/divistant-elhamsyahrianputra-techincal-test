@@ -15,6 +15,7 @@ import {
   useUpdateGenre,
 } from "@/features/genre/hooks/use-genre";
 import type { GenreRequest } from "@/features/genre/schemas/genre.schema";
+import { Card } from "@/core/components/ui/card";
 
 export default function Page() {
   const params = useParams();
@@ -55,21 +56,47 @@ export default function Page() {
               <div className="mb-4 font-semibold text-gray-600 text-xs uppercase tracking-wide">
                 Books in this Genre
               </div>
-              <ul className="space-y-1">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {booksResponse.data.map((book) => (
-                  <li
-                    className="flex items-center justify-between"
-                    key={book.id}
-                  >
-                    <span className="truncate font-medium text-gray-800">
-                      {book.title}
-                    </span>
-                    <span className="text-gray-400 text-xs">
-                      {book.publisher ?? ""}
-                    </span>
-                  </li>
+                  <div key={book.id}>
+                    <Card className="h-full overflow-hidden">
+                      <a
+                        href={`/books/${book.slug}`}
+                        tabIndex={-1}
+                        className="block"
+                      >
+                        <div className="relative aspect-2/3 bg-linear-to-br from-primary-lighter to-gray-100">
+                          {book.coverUrl ? (
+                            <img
+                              src={book.coverUrl}
+                              alt={book.title}
+                              className="object-cover w-full h-full cursor-pointer hover:opacity-90 transition"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center bg-gray-100 text-gray-400">
+                              No Cover
+                            </div>
+                          )}
+                        </div>
+                      </a>
+                      <div className="flex flex-col p-4">
+                        <a
+                          href={`/books/${book.slug}`}
+                          className="mb-2 line-clamp-2 font-semibold text-gray-900 text-sm hover:underline transition"
+                        >
+                          {book.title}
+                        </a>
+                        <p className="mb-1 text-gray-600 text-xs">
+                          {book.publisher || "Unknown Publisher"}
+                        </p>
+                        <p className="text-gray-400 text-xs">
+                          {dayjs(book.publishedAt).format("YYYY")}
+                        </p>
+                      </div>
+                    </Card>
+                  </div>
                 ))}
-              </ul>
+              </div>
               {booksResponse.meta && (
                 <div className="mt-6 flex justify-center">
                   <Pagination
