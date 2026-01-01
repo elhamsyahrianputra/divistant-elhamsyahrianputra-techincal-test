@@ -1,19 +1,60 @@
-interface ButtonProps {
-  children: React.ReactNode;
-  disabled?: boolean;
+import type { ButtonHTMLAttributes } from "react";
+import { tv, type VariantProps } from "tailwind-variants";
+
+const buttonVariants = tv({
+  base: "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg font-bold shadow transition-colors duration-250 ease-[0.4,0,0.2,1] hover:opacity-85 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-60",
+
+  variants: {
+    // Varian Warna
+    variant: {
+      primary: "bg-primary text-white",
+      secondary: "bg-secondary text-white",
+      info: "bg-info text-white",
+      success: "bg-success text-white",
+      warning: "bg-warning text-white",
+      error: "bg-error text-white",
+      dark: "bg-gray-800 text-white",
+      light: "bg-gray-100 text-gray-800",
+    },
+    size: {
+      sm: "h-7.5 px-2 py-1 text-[13px]",
+      md: "h-9 px-3 py-1.5 text-sm",
+      lg: "h-12 px-5 py-2 text-[15px]",
+    },
+  },
+  defaultVariants: {
+    variant: "primary",
+    size: "md",
+  },
+});
+
+interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   isLoading?: boolean;
 }
 
-export function Button({ children, disabled, isLoading }: ButtonProps) {
+export function Button({
+  className,
+  variant,
+  size,
+  isLoading,
+  children,
+  disabled,
+  type = "button",
+  ...props
+}: ButtonProps) {
   return (
     <button
-      className="flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-gray-800 font-bold text-sm text-white transition-opacity duration-250 ease-[0.4,0,0.2,1] hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-60"
+      className={buttonVariants({ variant, size, className })}
       disabled={disabled || isLoading}
-      type="submit"
+      type={type}
+      {...props}
     >
       {isLoading && (
         <svg
-          className="h-5 w-5 animate-spin"
+          // Ukuran icon loading disesuaikan agar proporsional
+          className="h-4 w-4 animate-spin"
           fill="none"
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
@@ -38,3 +79,6 @@ export function Button({ children, disabled, isLoading }: ButtonProps) {
     </button>
   );
 }
+
+// Export variants untuk keperluan testing atau penggunaan di komponen lain
+export { buttonVariants };

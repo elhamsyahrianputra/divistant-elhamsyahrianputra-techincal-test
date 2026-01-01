@@ -62,6 +62,15 @@ export class AuthorsService {
     });
   }
 
+  async updateImageUrl(id: string, imageUrl: string) {
+    await this.getById(id);
+
+    return await this.prisma.author.update({
+      where: { id },
+      data: { imageUrl },
+    });
+  }
+
   async remove(id: string) {
     await this.getById(id);
 

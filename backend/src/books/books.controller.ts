@@ -7,18 +7,28 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { ImageUrlTransformInterceptor } from 'src/common/interceptors/image-url-transform.interceptor';
+import { UploadService } from 'src/common/upload/upload.service';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
 @Controller('books')
+@UseInterceptors(ImageUrlTransformInterceptor)
 export class BooksController {
-  constructor(private readonly booksService: BooksService) {}
+  constructor(
+    private readonly booksService: BooksService,
+    private readonly uploadService: UploadService,
+  ) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
@@ -51,6 +61,56 @@ export class BooksController {
     return {
       message: 'Book retreived successfully',
       result: await this.booksService.getBySlug(slug),
+    };
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @Post(':id/upload-cover')
+  @UseInterceptors(
+    FileInterceptor('cover', {
+      storage: diskStorage({
+        destination: function (req, file, cb) {
+          const uploadService = new UploadService();
+          cb(null, uploadService.getUploadPath('books'));
+        },
+        filename: function (req, file, cb) {
+          const uploadService = new UploadService();
+          cb(null, uploadService.generateFileName(file, 'books'));
+        },
+      }),
+      fileFilter: (req, file, cb) => {
+        const uploadService = new UploadService();
+        const allowedTypes = uploadService.getAllowedMimeTypes('image');
+        if (!file.mimetype.match(allowedTypes)) {
+          return cb(new Error('Only image files are allowed'), false);
+        }
+        cb(null, true);
+      },
+      limits: {
+        fileSize: new UploadService().getFileSizeLimit('books'),
+      },
+    }),
+  )
+  async uploadCover(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      return {
+        message: 'No file uploaded',
+      };
+    }
+
+    const coverUrl = this.uploadService.getFileUrl(file.filename, 'books');
+    const result = await this.booksService.updateCoverUrl(id, coverUrl);
+
+    return {
+      message: 'Cover image uploaded successfully',
+      result: {
+        ...result,
+        coverUrl,
+      },
     };
   }
 

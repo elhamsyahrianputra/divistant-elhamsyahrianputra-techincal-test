@@ -55,6 +55,7 @@ model Book {
   slug        String    @unique
   title       String
   isbn        String?   @unique
+  publisher   String?
   publishedAt DateTime?
   coverUrl    String?
   pages       Int?

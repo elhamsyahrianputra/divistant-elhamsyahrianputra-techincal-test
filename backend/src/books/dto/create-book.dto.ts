@@ -22,15 +22,9 @@ export class CreateBookDto {
   @IsString()
   isbn?: string;
 
-  // @IsOptional()
-  // @IsNotEmpty()
-  // @IsDateString()
-  // @MaxDate(new Date(new Date().setDate(new Date().getDate() - 1)), { message: "Tanggal maksimal yang diperbolehkan adalah kemarin", })
-  // publishedAt?: string;
-
   @IsOptional()
   @IsNotEmpty()
-  @Type(() => Date) // ⬅️ PENTING
+  @Type(() => Date)
   @IsDate()
   @MaxDate(new Date())
   publishedAt?: Date;

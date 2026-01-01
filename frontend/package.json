@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@solar-icons/react": "^1.0.1",
     "@tanstack/react-query": "^5.90.16",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.19",
     "next": "16.1.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -22,7 +24,9 @@
     "simplebar-react": "^3.3.2",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.3.2"
+    "tailwind-variants": "^3.2.2",
+    "zod": "^4.3.2",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

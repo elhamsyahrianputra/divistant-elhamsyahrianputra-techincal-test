@@ -30,7 +30,7 @@ export default function Page() {
   return (
     <>
       {/* Left Section */}
-      <section className="hidden max-w-120 flex-1 flex-col items-center justify-center gap-y-6 bg-linear-to-br from-white to-gray-200 lg:flex">
+      <section className="hidden max-w-120 flex-1 flex-col items-center justify-center gap-y-12 bg-linear-to-br from-white to-gray-200 lg:flex">
         <div className="flex flex-col gap-y-4 text-center">
           <h1 className="font-bold text-3xl text-gray-800">Welcome Back!</h1>
           <p className="px-12 text-gray-600 text-sm">
@@ -39,7 +39,7 @@ export default function Page() {
           </p>
         </div>
         <div className="flex justify-center">
-          <div className="w-9/12">
+          <div className="w-7/12">
             <Image
               alt="Ilustrasi login — orang membaca buku"
               className="object-contain"
@@ -92,7 +92,14 @@ export default function Page() {
                 Forgot password?
               </Link>
             </div>
-            <Button isLoading={isPending}>Sign In</Button>
+            <Button
+              isLoading={isPending}
+              size="lg"
+              type="submit"
+              variant="dark"
+            >
+              Sign In
+            </Button>
           </div>
         </form>
       </section>

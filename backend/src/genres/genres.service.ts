@@ -39,6 +39,9 @@ export class GenresService {
       include: {
         books: true,
       },
+      orderBy: {
+        name: 'asc',
+      },
     });
   }
 

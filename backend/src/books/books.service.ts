@@ -56,6 +56,10 @@ export class BooksService {
     return await this.prisma.book.findMany({
       include: {
         authors: true,
+        genres: true,
+      },
+      orderBy: {
+        updatedAt: 'desc',
       },
     });
   }
@@ -63,6 +67,10 @@ export class BooksService {
   async getById(id: string) {
     const book = await this.prisma.book.findUnique({
       where: { id },
+      include: {
+        authors: true,
+        genres: true,
+      }
     });
 
     if (!book) {
@@ -88,25 +96,36 @@ export class BooksService {
     try {
       await this.getById(id);
 
+      // Prepare update data
+      const updateData: any = {
+        ...request,
+      };
+
+      // Only update authors if provided and not empty
+      if (request.authors && request.authors.length > 0) {
+        updateData.authors = {
+          set: request.authors.map((author) => {
+            return { id: author };
+          }),
+        };
+      }
+
+      // Only update genres if provided and not empty
+      if (request.genres && request.genres.length > 0) {
+        updateData.genres = {
+          set: request.genres.map((genre) => {
+            return { id: genre };
+          }),
+        };
+      }
+
       return await this.prisma.book.update({
         where: { id },
         include: {
           authors: true,
           genres: true,
         },
-        data: {
-          ...request,
-          authors: {
-            set: request.authors?.map((author) => {
-              return { id: author };
-            }),
-          },
-          genres: {
-            set: request.genres?.map((genre) => {
-              return { id: genre };
-            }),
-          },
-        },
+        data: updateData,
       });
     } catch (error) {
       if (
@@ -119,6 +138,19 @@ export class BooksService {
       }
       throw error;
     }
+  }
+
+  async updateCoverUrl(id: string, coverUrl: string) {
+    await this.getById(id);
+
+    return await this.prisma.book.update({
+      where: { id },
+      data: { coverUrl },
+      include: {
+        authors: true,
+        genres: true,
+      },
+    });
   }
 
   async remove(id: string) {

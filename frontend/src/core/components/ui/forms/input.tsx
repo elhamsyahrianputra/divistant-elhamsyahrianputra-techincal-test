@@ -9,7 +9,7 @@ interface InputProps
 
 export function Input({ label, errorMessage, ...props }: InputProps) {
   return (
-    <div>
+    <div className="w-full">
       <div className="relative">
         <input
           className="peer w-full rounded-lg px-3.5 py-4 transition-colors ease-[0.4,0,0.2,1] focus:outline-0"

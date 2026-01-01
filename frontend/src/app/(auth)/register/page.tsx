@@ -30,7 +30,7 @@ export default function Page() {
   return (
     <>
       {/* Left Section */}
-      <section className="hidden max-w-120 flex-1 flex-col items-center justify-center gap-y-6 bg-linear-to-br from-white to-gray-200 lg:flex">
+      <section className="hidden max-w-120 flex-1 flex-col items-center justify-center gap-y-12 bg-linear-to-br from-white to-gray-200 lg:flex">
         <div className="flex flex-col gap-y-4 text-center">
           <h1 className="font-bold text-3xl text-gray-800">
             Create Your Account
@@ -41,7 +41,7 @@ export default function Page() {
           </p>
         </div>
         <div className="flex justify-center">
-          <div className="w-9/12">
+          <div className="w-7/12">
             <Image
               alt="Ilustrasi login — orang membaca buku"
               className="object-contain"
@@ -95,7 +95,14 @@ export default function Page() {
               {...register("password")}
               errorMessage={errors.password?.message}
             />
-            <Button isLoading={isPending}>Sign Up</Button>
+            <Button
+              isLoading={isPending}
+              size={"lg"}
+              type="submit"
+              variant={"dark"}
+            >
+              Sign Up
+            </Button>
           </div>
         </form>
 

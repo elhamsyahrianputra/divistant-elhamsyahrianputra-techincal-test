@@ -37,7 +37,11 @@
         "useSortedClasses": {
           "fix": "safe",
           "level": "error",
-          "options": {}
+          "options": {
+            "functions": [
+              "tv"
+            ]
+          }
         }
       }
     },

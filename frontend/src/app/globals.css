@@ -60,4 +60,9 @@
   --color-gray-700: #454f5b;
   --color-gray-800: #1c252e;
   --color-gray-900: #141a21;
+
+  /* Shdaow */
+  --shadow-card:
+    0 0 2px 0 rgba(145, 158, 171, 0.2), 0 12px 24px -4px
+    rgba(145, 158, 171, 0.12);
 }
