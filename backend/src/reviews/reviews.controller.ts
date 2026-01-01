@@ -6,9 +6,11 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { QueryParamsDto } from 'src/common/dto/query-params.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
@@ -35,20 +37,26 @@ export class ReviewsController {
   }
 
   @Get('book/:bookId')
-  async getByBook(@Param('bookId', ParseUUIDPipe) bookId: string) {
+  async getByBook(
+    @Param('bookId', ParseUUIDPipe) bookId: string,
+    @Query() queryParams: QueryParamsDto,
+  ) {
     return {
       message: 'Reviews retrieved successfully',
-      result: await this.reviewsService.getReviewsByBook(bookId),
+      result: await this.reviewsService.getReviewsByBook(bookId, queryParams),
     };
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
-  async getByUser(@Request() req: { user: { userId: string } }) {
+  async getByUser(
+    @Request() req: { user: { userId: string } },
+    @Query() queryParams: QueryParamsDto,
+  ) {
     const userId = req.user.userId;
     return {
       message: 'User reviews retrieved successfully',
-      result: await this.reviewsService.getReviewsByUser(userId),
+      result: await this.reviewsService.getReviewsByUser(userId, queryParams),
     };
   }
 

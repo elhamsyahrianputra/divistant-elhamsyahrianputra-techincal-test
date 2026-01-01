@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, BookBookmark } from "@solar-icons/react";
+import { BookBookmark, PenNewRound } from "@solar-icons/react";
 import Link from "next/link";
 import { Badge } from "@/core/components/ui/badge";
 import { Card } from "@/core/components/ui/card";
@@ -38,8 +38,8 @@ export function GenreStrip({ genre }: GenreStripProps) {
             </span>
           </div>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-lighter text-primary transition group-hover:translate-x-1">
-          <ArrowRight size={22} weight="BoldDuotone" />
+        <div className="flex h-12 w-12 items-center justify-center text-primary transition group-hover:translate-x-1">
+          <PenNewRound size={32} weight="BoldDuotone" />
         </div>
       </Card>
     </Link>

@@ -1,8 +1,17 @@
+import { Logout } from "@solar-icons/react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useSidebarStore } from "@/core/store/use-sidebar.store";
+import { tokenStorage } from "@/core/utils/token-storage";
 
 export default function Navbar() {
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    tokenStorage.remove();
+    router.push("/");
+  };
 
   return (
     <header className="sticky top-0 z-1000 flex h-16 justify-between bg-white/80 px-4 backdrop-blur-xs sm:px-6 xl:h-18 xl:px-10">
@@ -67,16 +76,28 @@ export default function Navbar() {
         <li>
           <button
             className="relative flex size-10 items-center justify-center"
+            onClick={handleLogout}
+            title="Logout"
             type="button"
           >
-            <span className="absolute block size-10 animate-spin rounded-full bg-gradient-to-r from-warning via-gray-500 to-primary [animation-duration:8s]"></span>
+            <span className="absolute block size-10 animate-spin rounded-full bg-linear-to-r from-warning via-gray-500 to-primary [animation-duration:8s]"></span>
             <Image
-              alt="Jaydon Frankie"
+              alt="Admin User"
               className="relative z-10 box-content rounded-full bg-white from-0% via-45% to-55% p-0.5"
               height={34}
               src="/img/avatar.webp"
               width={34}
             ></Image>
+          </button>
+        </li>
+        <li>
+          <button
+            className="cursor pointer flex size-10 items-center justify-center rounded-full transition-colors hover:bg-gray-500/8"
+            onClick={handleLogout}
+            title="Logout"
+            type="button"
+          >
+            <Logout size={28} />
           </button>
         </li>
       </ul>

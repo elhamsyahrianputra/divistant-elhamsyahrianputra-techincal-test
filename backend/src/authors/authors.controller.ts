@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,6 +17,7 @@ import { diskStorage } from 'multer';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { QueryParamsDto } from 'src/common/dto/query-params.dto';
 import { ImageUrlTransformInterceptor } from 'src/common/interceptors/image-url-transform.interceptor';
 import { UploadService } from 'src/common/upload/upload.service';
 import { AuthorsService } from './authors.service';
@@ -41,28 +43,39 @@ export class AuthorsController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() queryParams: QueryParamsDto) {
     return {
       message: 'Authors retrieved successfully',
-      result: await this.authorsService.getAll(),
+      result: await this.authorsService.getAll(queryParams),
     };
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin')
   @Get(':id')
-  async findByIds(@Param('id', ParseUUIDPipe) id: string) {
+  async findByIds(@Param('id', ParseUUIDPipe) id: string, @Query('includes') includes?: string) {
     return {
       message: 'Author retreived successfully',
-      result: await this.authorsService.getById(id),
+      result: await this.authorsService.getById(id, includes),
+    };
+  }
+
+  @Get(':id/books')
+  async getBooks(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Query() queryParams: QueryParamsDto,
+  ) {
+    return {
+      message: 'Author books retrieved successfully',
+      result: await this.authorsService.getBooks(id, queryParams),
     };
   }
 
   @Get('slug/:slug')
-  async findBySlug(@Param('slug') slug: string) {
+  async findBySlug(@Param('slug') slug: string, @Query('includes') includes?: string) {
     return {
       message: 'Author retreived successfully',
-      result: await this.authorsService.getBySlug(slug),
+      result: await this.authorsService.getBySlug(slug, includes),
     };
   }
 
@@ -72,11 +85,11 @@ export class AuthorsController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: function (req, file, cb) {
+        destination: (req, file, cb) => {
           const uploadService = new UploadService();
           cb(null, uploadService.getUploadPath('authors'));
         },
-        filename: function (req, file, cb) {
+        filename: (req, file, cb) => {
           const uploadService = new UploadService();
           cb(null, uploadService.generateFileName(file, 'authors'));
         },

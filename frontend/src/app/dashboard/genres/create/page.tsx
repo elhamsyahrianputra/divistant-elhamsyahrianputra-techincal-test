@@ -21,7 +21,7 @@ export default function Page() {
         </div>
 
         <div className="w-full lg:w-3/12">
-          <div className="rounded-2xl border border-dashed border-primary/30 bg-primary-lighter/30 p-4 text-sm text-gray-700">
+          <div className="rounded-2xl border border-primary/30 border-dashed bg-primary-lighter/30 p-4 text-gray-700 text-sm">
             <p className="font-semibold text-primary">Tips</p>
             <ul className="mt-2 list-disc pl-4 text-gray-600">
               <li>Keep genre names concise and recognizable.</li>

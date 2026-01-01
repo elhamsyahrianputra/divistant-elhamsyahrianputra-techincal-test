@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -16,6 +17,7 @@ import { diskStorage } from 'multer';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { QueryParamsDto } from 'src/common/dto/query-params.dto';
 import { ImageUrlTransformInterceptor } from 'src/common/interceptors/image-url-transform.interceptor';
 import { UploadService } from 'src/common/upload/upload.service';
 import { BooksService } from './books.service';
@@ -41,26 +43,26 @@ export class BooksController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(@Query() queryParams: QueryParamsDto) {
     return {
       message: 'Books retrieved successfully',
-      result: await this.booksService.getAll(),
+      result: await this.booksService.getAll(queryParams),
     };
   }
 
   @Get(':id')
-  async findById(@Param('id', ParseUUIDPipe) id: string) {
+  async findById(@Param('id', ParseUUIDPipe) id: string, @Query('includes') includes?: string) {
     return {
       message: 'Book retreived successfully',
-      result: await this.booksService.getById(id),
+      result: await this.booksService.getById(id, includes),
     };
   }
 
   @Get('slug/:slug')
-  async findBySlug(@Param('slug') slug: string) {
+  async findBySlug(@Param('slug') slug: string, @Query('includes') includes?: string) {
     return {
       message: 'Book retreived successfully',
-      result: await this.booksService.getBySlug(slug),
+      result: await this.booksService.getBySlug(slug, includes),
     };
   }
 
@@ -70,11 +72,11 @@ export class BooksController {
   @UseInterceptors(
     FileInterceptor('cover', {
       storage: diskStorage({
-        destination: function (req, file, cb) {
+        destination: (req, file, cb) => {
           const uploadService = new UploadService();
           cb(null, uploadService.getUploadPath('books'));
         },
-        filename: function (req, file, cb) {
+        filename: (req, file, cb) => {
           const uploadService = new UploadService();
           cb(null, uploadService.generateFileName(file, 'books'));
         },

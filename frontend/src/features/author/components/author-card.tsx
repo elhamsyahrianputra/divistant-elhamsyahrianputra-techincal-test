@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/core/components/ui/card";
+import { IMAGE_PLACEHOLDERS } from "@/core/constants/images";
 import dayjs from "@/core/lib/dayjs";
 import type { Author } from "../types/author.types";
 
@@ -19,23 +20,13 @@ export function AuthorCard({ author }: AuthorCardProps) {
         className="relative block aspect-square w-full overflow-hidden rounded-2xl"
         href={`/dashboard/authors/${author.id}`}
       >
-        {author.imageUrl ? (
-          <Image
-            alt={author.name}
-            className="h-full w-full object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 25vw"
-            src={author.imageUrl}
-          />
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center bg-linear-to-br from-10% from-primary-lighter to-30% to-gray-100">
-            <span className="text-center font-semibold text-2xl text-gray-600 leading-6">
-              Photo
-              <br />
-              Unavailable
-            </span>
-          </div>
-        )}
+        <Image
+          alt={author.name}
+          className="h-full w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, 25vw"
+          src={author.imageUrl || IMAGE_PLACEHOLDERS.AUTHOR_IMAGE}
+        />
       </Link>
 
       <div className="mt-3 flex flex-1 flex-col">

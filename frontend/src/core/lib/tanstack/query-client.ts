@@ -25,7 +25,6 @@ export const queryClient = new QueryClient({
         const errorMessage = getErrorMessage(error);
         toast.error(errorMessage);
       },
-      throwOnError: false,
     },
   },
 });

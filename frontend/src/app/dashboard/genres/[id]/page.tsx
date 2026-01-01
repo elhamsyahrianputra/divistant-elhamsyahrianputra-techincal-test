@@ -2,13 +2,16 @@
 
 import { TrashBinTrash } from "@solar-icons/react";
 import { useParams } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/core/components/ui/button";
+import { Pagination } from "@/core/components/ui/pagination/pagination";
 import dayjs from "@/core/lib/dayjs";
 import { GenreFormFields } from "@/features/genre/components";
 import {
   useDeleteGenre,
   useGenre,
+  useGenreBooks,
   useUpdateGenre,
 } from "@/features/genre/hooks/use-genre";
 import type { GenreRequest } from "@/features/genre/schemas/genre.schema";
@@ -16,8 +19,14 @@ import type { GenreRequest } from "@/features/genre/schemas/genre.schema";
 export default function Page() {
   const params = useParams();
   const genreId = params.id as string;
+  const [bookPage, setBookPage] = useState(1);
+  const [bookLimit] = useState(5);
 
   const { data: genre } = useGenre(genreId);
+  const { data: booksResponse } = useGenreBooks(genreId, {
+    page: bookPage,
+    limit: bookLimit,
+  });
   const { mutate: updateGenre } = useUpdateGenre(genreId);
   const { mutate: deleteGenre } = useDeleteGenre(genreId);
 
@@ -41,13 +50,13 @@ export default function Page() {
             <GenreFormFields genre={genre?.data} onSubmit={handleUpdate} />
           </div>
 
-          {genre?.data.books && genre.data.books.length > 0 && (
+          {booksResponse?.data && booksResponse.data.length > 0 && (
             <div className="mt-2 rounded-xl border border-gray-100 bg-gray-50 p-4">
-              <div className="mb-2 font-semibold text-gray-600 text-xs uppercase tracking-wide">
+              <div className="mb-4 font-semibold text-gray-600 text-xs uppercase tracking-wide">
                 Books in this Genre
               </div>
               <ul className="space-y-1">
-                {genre.data.books.slice(0, 8).map((book) => (
+                {booksResponse.data.map((book) => (
                   <li
                     className="flex items-center justify-between"
                     key={book.id}
@@ -60,12 +69,15 @@ export default function Page() {
                     </span>
                   </li>
                 ))}
-                {genre.data.books.length > 8 && (
-                  <li className="text-gray-400 text-xs">
-                    +{genre.data.books.length - 8} more
-                  </li>
-                )}
               </ul>
+              {booksResponse.meta && (
+                <div className="mt-6 flex justify-center">
+                  <Pagination
+                    meta={booksResponse.meta}
+                    onPageChange={setBookPage}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -99,7 +111,7 @@ export default function Page() {
               <div className="flex items-center justify-between">
                 <span>Books</span>
                 <span className="font-semibold text-lg text-primary">
-                  {genre?.data.books?.length ?? 0}
+                  {booksResponse?.meta?.total_items ?? 0}
                 </span>
               </div>
               <div className="flex items-center justify-between">

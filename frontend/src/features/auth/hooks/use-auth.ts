@@ -19,7 +19,8 @@ export const useLogin = () => {
     onSuccess: (response) => {
       const { token } = response.data;
       tokenStorage.set(token);
-      router.push("/dashboard");
+      toast.success(response.message || "Login successful!");
+      router.push("/");
     },
   });
 };
@@ -39,4 +40,13 @@ export function useRegister() {
       router.push("/login");
     },
   });
+}
+
+export function useLogout() {
+  const router = useRouter();
+
+  return () => {
+    tokenStorage.remove();
+    router.push("/");
+  };
 }

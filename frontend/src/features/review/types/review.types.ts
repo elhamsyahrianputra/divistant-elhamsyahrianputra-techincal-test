@@ -7,7 +7,8 @@ export interface Review {
   user: User;
   bookId: string;
   book: Book;
-  commnet?: string;
+  rating: number;
+  comment?: string;
   createdAt: Date;
   updatedAt: Date;
 }

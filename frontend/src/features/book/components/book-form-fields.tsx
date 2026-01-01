@@ -196,7 +196,7 @@ export function BookFormFields({
         />
 
         <div className="flex justify-end gap-3 pt-4">
-          <Button type="button" variant="light" onClick={handleCancelOrReset}>
+          <Button onClick={handleCancelOrReset} type="button" variant="light">
             {book ? "Reset" : "Cancel"}
           </Button>
           <Button type="submit" variant="dark">

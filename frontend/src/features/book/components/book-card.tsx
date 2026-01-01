@@ -4,6 +4,7 @@ import { Star } from "@solar-icons/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/core/components/ui/card";
+import { IMAGE_PLACEHOLDERS } from "@/core/constants/images";
 import { useReviewAverage } from "@/features/review/hooks/use-review";
 import type { Book } from "../types/book.types";
 
@@ -20,21 +21,13 @@ export function BookCard({ book }: BookCardProps) {
         className="relative block aspect-2/3 w-full overflow-hidden rounded-r-2xl"
         href={`/dashboard/books/${book.id}`}
       >
-        {book.coverUrl ? (
-          <Image
-            alt={book.title}
-            className="h-full w-full object-cover"
-            fill
-            sizes="(max-width: 768px) 100vw, 25vw"
-            src={book.coverUrl}
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-linear-to-br from-10% from-primary-lighter to-30% to-gray-100">
-            <span className="text-center font-semibold text-2xl text-gray-600 leading-6">
-              Cover <br /> Unavailable
-            </span>
-          </div>
-        )}
+        <Image
+          alt={book.title}
+          className="h-full w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, 25vw"
+          src={book.coverUrl || IMAGE_PLACEHOLDERS.BOOK_COVER}
+        />
       </Link>
       <div className="mt-3 flex flex-1 flex-col">
         <Link

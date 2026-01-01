@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/core/components/ui/button";
+import { IMAGE_PLACEHOLDERS } from "@/core/constants/images";
 import { useUploadCover } from "../hooks/use-book";
 
 interface BookCoverUploadProps {
@@ -82,18 +82,23 @@ export function CoverUpload({
             </div>
           </>
         ) : (
-          <div className="relative flex aspect-2/3 flex-col items-center justify-center gap-y-4 bg-linear-to-br from-10% from-primary-lighter to-30% to-gray-100">
-            <span className="text-center font-semibold text-2xl text-gray-600 leading-6">
-              Cover <br /> Unavailable
-            </span>
-            <Button
-              className="absolute translate-y-13 text-xs"
-              onClick={() => fileInputRef.current?.click()}
-              variant="light"
-            >
-              Upload Image
-            </Button>
-          </div>
+          <>
+            <Image
+              alt="Book Cover Placeholder"
+              className="h-full w-full object-cover"
+              fill
+              src={IMAGE_PLACEHOLDERS.BOOK_COVER}
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+              <button
+                className="cursor-pointer rounded-lg bg-white px-4 py-2 font-medium text-gray-800 text-sm shadow-lg hover:bg-gray-100"
+                onClick={() => fileInputRef.current?.click()}
+                type="button"
+              >
+                Upload Cover
+              </button>
+            </div>
+          </>
         )}
         <input
           accept="image/*"

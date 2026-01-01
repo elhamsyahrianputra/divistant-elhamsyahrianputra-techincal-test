@@ -5,21 +5,40 @@ import {
 } from '@nestjs/common';
 import { Prisma } from 'prisma/generated/client';
 import slugify from 'slugify';
+import { QueryParamsDto } from 'src/common/dto/query-params.dto';
+import { buildIncludes } from 'src/common/utils/includes-builder.util';
+import { type PaginatedResult } from 'src/common/utils/pagination.util';
+import { QueryBuilder } from 'src/common/utils/query-builder.util';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BooksService {
-  constructor(private prisma: PrismaService) {}
+  private queryBuilder: QueryBuilder;
+
+  constructor(private prisma: PrismaService) {
+    this.queryBuilder = new QueryBuilder({
+      prisma: this.prisma,
+      model: 'book',
+      path: '/api/books',
+      searchFields: [
+        'title',
+        'isbn',
+        'publisher',
+        'description',
+        'authors.name',
+        'genres.name',
+      ],
+      allowedIncludes: ['authors', 'genres', 'reviews'],
+      defaultSortBy: 'updatedAt',
+      defaultSortOrder: 'desc',
+    });
+  }
 
   async create(request: CreateBookDto) {
     try {
       return await this.prisma.book.create({
-        include: {
-          authors: true,
-          genres: true,
-        },
         data: {
           ...request,
           slug: `${slugify(request.title, {
@@ -52,41 +71,93 @@ export class BooksService {
     }
   }
 
-  async getAll() {
-    return await this.prisma.book.findMany({
-      include: {
-        authors: true,
-        genres: true,
-      },
-      orderBy: {
-        updatedAt: 'desc',
-      },
-    });
+  async getAll(
+    queryParams?: QueryParamsDto,
+  ): Promise<PaginatedResult<unknown>> {
+    const result = await this.queryBuilder.getAll(queryParams);
+    
+    // Calculate averageRating if reviews are included
+    if (Array.isArray(result.data) && result.data.length > 0) {
+      result.data = result.data.map((book: any) => {
+        if (book.reviews && Array.isArray(book.reviews)) {
+          const avgRating = book.reviews.length > 0
+            ? book.reviews.reduce((sum: number, review: any) => sum + review.rating, 0) / book.reviews.length
+            : 0;
+          return {
+            ...book,
+            averageRating: parseFloat(avgRating.toFixed(2)),
+          };
+        }
+        return book;
+      });
+    }
+    
+    return result;
   }
 
-  async getById(id: string) {
+  async getById(id: string, includes?: string) {
+    // Default to authors and genres if no includes specified
+    const defaultIncludes = includes || 'authors,genres';
+    const includeRelations = buildIncludes(defaultIncludes, [
+      'authors',
+      'genres',
+      'reviews',
+    ]);
+
     const book = await this.prisma.book.findUnique({
       where: { id },
-      include: {
-        authors: true,
-        genres: true,
-      }
+      ...(Object.keys(includeRelations).length > 0 && {
+        include: includeRelations,
+      }),
     });
 
     if (!book) {
       throw new NotFoundException(`Book with ID: '${id}' not found`);
     }
 
+    // Calculate averageRating if reviews are included
+    if ((book as any).reviews && Array.isArray((book as any).reviews)) {
+      const avgRating = (book as any).reviews.length > 0
+        ? (book as any).reviews.reduce((sum: number, review: any) => sum + review.rating, 0) / (book as any).reviews.length
+        : 0;
+      return {
+        ...book,
+        averageRating: parseFloat(avgRating.toFixed(2)),
+      };
+    }
+
     return book;
   }
 
-  async getBySlug(slug: string) {
+  async getBySlug(slug: string, includes?: string) {
+    // Default to authors and genres if no includes specified
+    const defaultIncludes = includes || 'authors,genres';
+    const includeRelations = buildIncludes(defaultIncludes, [
+      'authors',
+      'genres',
+      'reviews',
+    ]);
+
     const book = await this.prisma.book.findUnique({
       where: { slug },
+      ...(Object.keys(includeRelations).length > 0 && {
+        include: includeRelations,
+      }),
     });
 
     if (!book) {
       throw new NotFoundException(`Book with Slug: '${slug}' not found`);
+    }
+
+    // Calculate averageRating if reviews are included
+    if ((book as any).reviews && Array.isArray((book as any).reviews)) {
+      const avgRating = (book as any).reviews.length > 0
+        ? (book as any).reviews.reduce((sum: number, review: any) => sum + review.rating, 0) / (book as any).reviews.length
+        : 0;
+      return {
+        ...book,
+        averageRating: parseFloat(avgRating.toFixed(2)),
+      };
     }
 
     return book;
@@ -96,24 +167,25 @@ export class BooksService {
     try {
       await this.getById(id);
 
-      // Prepare update data
-      const updateData: any = {
-        ...request,
+      // Prepare update data - exclude authors and genres from spread
+      const { authors, genres, ...restRequest } = request;
+      const updateData: Prisma.BookUpdateInput = {
+        ...restRequest,
       };
 
       // Only update authors if provided and not empty
-      if (request.authors && request.authors.length > 0) {
+      if (authors && authors.length > 0) {
         updateData.authors = {
-          set: request.authors.map((author) => {
+          set: authors.map((author) => {
             return { id: author };
           }),
         };
       }
 
       // Only update genres if provided and not empty
-      if (request.genres && request.genres.length > 0) {
+      if (genres && genres.length > 0) {
         updateData.genres = {
-          set: request.genres.map((genre) => {
+          set: genres.map((genre) => {
             return { id: genre };
           }),
         };
@@ -121,10 +193,6 @@ export class BooksService {
 
       return await this.prisma.book.update({
         where: { id },
-        include: {
-          authors: true,
-          genres: true,
-        },
         data: updateData,
       });
     } catch (error) {
@@ -146,10 +214,6 @@ export class BooksService {
     return await this.prisma.book.update({
       where: { id },
       data: { coverUrl },
-      include: {
-        authors: true,
-        genres: true,
-      },
     });
   }
 

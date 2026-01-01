@@ -1,9 +1,10 @@
 "use client";
 
-import { forwardRef } from "react";
 import type { InputHTMLAttributes } from "react";
+import { forwardRef } from "react";
 
-interface FileInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+interface FileInputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type"> {
   label?: string;
   errorMessage?: string;
   onFileChange?: (file: File | null) => void;
@@ -19,26 +20,16 @@ export const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
     return (
       <div className="flex flex-col gap-y-1.5">
         {label && (
-          <label className="text-sm font-medium text-gray-700">
-            {label}
-          </label>
+          <label className="font-medium text-gray-700 text-sm">{label}</label>
         )}
         <input
-          ref={ref}
-          type="file"
           accept="image/*"
-          onChange={handleChange}
-          className={`
-            block w-full text-sm text-gray-500
-            file:mr-4 file:py-2 file:px-4
-            file:rounded-md file:border-0
-            file:text-sm file:font-semibold
-            file:bg-gray-50 file:text-gray-700
-            hover:file:bg-gray-100
-            focus:outline-none
-            ${errorMessage ? "border-error" : ""}
+          className={`block w-full text-gray-500 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-gray-50 file:px-4 file:py-2 file:font-semibold file:text-gray-700 file:text-sm hover:file:bg-gray-100 focus:outline-none ${errorMessage ? "border-error" : ""}
             ${className}
           `}
+          onChange={handleChange}
+          ref={ref}
+          type="file"
           {...props}
         />
         {errorMessage && (
@@ -46,7 +37,7 @@ export const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
 FileInput.displayName = "FileInput";

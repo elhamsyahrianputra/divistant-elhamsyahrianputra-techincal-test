@@ -23,6 +23,7 @@
     "simplebar": "^6.3.3",
     "simplebar-react": "^3.3.2",
     "sonner": "^2.0.7",
+    "swiper": "^12.0.3",
     "tailwind-merge": "^3.4.0",
     "tailwind-variants": "^3.2.2",
     "zod": "^4.3.2",

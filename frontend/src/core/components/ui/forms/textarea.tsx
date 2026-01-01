@@ -1,8 +1,7 @@
 import type { TextareaHTMLAttributes } from "react";
 import { cn } from "@/core/utils/cn";
 
-interface TextareaProps
-  extends Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "className"> {
+interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   errorMessage?: string;
 }
@@ -10,7 +9,7 @@ interface TextareaProps
 export function Textarea({ label, errorMessage, ...props }: TextareaProps) {
   return (
     <div>
-      <div className="relative pr-1.5">
+      <div className={cn("relative pr-1.5", props.className)}>
         <textarea
           className="peer w-full rounded-lg px-3.5 py-4 transition-colors ease-[0.4,0,0.2,1] focus:outline-0"
           id={props.name}

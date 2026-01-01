@@ -19,8 +19,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </Sidebar.Section>
         <Sidebar.Section title="Management">
           <Sidebar.Item href="/dashboard/books" icon={Book2} title="Books" />
-          <Sidebar.Item href="/dashboard/authors" icon={User} title="Author" />
-          <Sidebar.Item href="/dashboard/genres" icon={Widget3} title="Genre" />
+          <Sidebar.Item href="/dashboard/authors" icon={User} title="Authors" />
+          <Sidebar.Item
+            href="/dashboard/genres"
+            icon={Widget3}
+            title="Genres"
+          />
         </Sidebar.Section>
       </Sidebar.Wrapper>
 

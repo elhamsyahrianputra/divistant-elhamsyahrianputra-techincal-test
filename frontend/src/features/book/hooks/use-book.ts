@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import type { QueryParams } from "@/core/types/pagination.types";
 import type { BookRequest } from "../schemas/book.schema";
 import { bookService } from "../services/book.services";
 
-export function useBooks() {
+export function useBooks(params?: QueryParams) {
   return useQuery({
-    queryKey: ["book"],
-    queryFn: bookService.getAll,
+    queryKey: ["book", params],
+    queryFn: () => bookService.getAll(params),
   });
 }
 
@@ -15,6 +16,13 @@ export function useBook(id: string) {
   return useQuery({
     queryKey: ["book", id],
     queryFn: () => bookService.getById(id as string),
+  });
+}
+
+export function useBookBySlug(slug: string) {
+  return useQuery({
+    queryKey: ["book", slug],
+    queryFn: () => bookService.getBySlug(slug as string),
   });
 }
 

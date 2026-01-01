@@ -17,5 +17,6 @@ export interface Book {
 
   authors: Author[];
   genres: Genre[];
-  reviews: Review[];
+  reviews?: Review[];
+  averageRating?: number;
 }

@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const bookSchema = z.object({
-  title: z.string().nonempty('Title is required').min(1, "Title is required"),
+  title: z.string().nonempty("Title is required").min(1, "Title is required"),
   isbn: z.string().optional(),
   pages: z
     .number()

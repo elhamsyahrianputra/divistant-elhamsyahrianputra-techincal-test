@@ -1,10 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { QueryParamsDto } from 'src/common/dto/query-params.dto';
+import { type PaginatedResult } from 'src/common/utils/pagination.util';
+import { QueryBuilder } from 'src/common/utils/query-builder.util';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 
 @Injectable()
 export class ReviewsService {
-  constructor(private prisma: PrismaService) {}
+  private queryBuilder: QueryBuilder;
+
+  constructor(private prisma: PrismaService) {
+    this.queryBuilder = new QueryBuilder({
+      prisma: this.prisma,
+      model: 'review',
+      path: '/api/reviews',
+      searchFields: ['comment'],
+      allowedIncludes: ['book', 'user'],
+      defaultSortBy: 'createdAt',
+      defaultSortOrder: 'desc',
+    });
+  }
 
   async createReview(userId: string, bookId: string, request: CreateReviewDto) {
     return await this.prisma.review.create({
@@ -20,24 +35,18 @@ export class ReviewsService {
     });
   }
 
-  async getReviewsByBook(bookId: string) {
-    return await this.prisma.review.findMany({
-      where: { bookId },
-      include: {
-        user: { select: { name: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async getReviewsByBook(
+    bookId: string,
+    queryParams?: QueryParamsDto,
+  ): Promise<PaginatedResult<unknown>> {
+    return this.queryBuilder.getAllWithCustomWhere({ bookId }, queryParams);
   }
 
-  async getReviewsByUser(userId: string) {
-    return await this.prisma.review.findMany({
-      where: { userId },
-      include: {
-        book: { select: { title: true, slug: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+  async getReviewsByUser(
+    userId: string,
+    queryParams?: QueryParamsDto,
+  ): Promise<PaginatedResult<unknown>> {
+    return this.queryBuilder.getAllWithCustomWhere({ userId }, queryParams);
   }
 
   async deleteReview(id: string) {

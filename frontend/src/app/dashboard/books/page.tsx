@@ -2,19 +2,34 @@
 
 import { AddCircle } from "@solar-icons/react";
 import Link from "next/link";
+import { useState } from "react";
 import { buttonVariants } from "@/core/components/ui/button";
 import { Search } from "@/core/components/ui/forms";
+import { Pagination } from "@/core/components/ui/pagination";
 import { BookCard } from "@/features/book/components";
 import { useBooks } from "@/features/book/hooks/use-book";
 
 export default function Page() {
-  const { data: books } = useBooks();
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const { data: books } = useBooks({
+    search: search || undefined,
+    page,
+    limit: 12,
+    include: "authors,genres",
+  });
+
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   return (
-    <div>
+    <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="w-8/12">
-          <Search />
+          <Search onSearch={handleSearch} placeholder="Search books..." />
         </div>
 
         <Link
@@ -26,11 +41,13 @@ export default function Page() {
         </Link>
       </div>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {books?.data.map((book) => (
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {books?.data?.map((book) => (
           <BookCard book={book} key={book.slug} />
         ))}
       </div>
+
+      {books?.meta && <Pagination meta={books.meta} onPageChange={setPage} />}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { Button } from "@/core/components/ui/button";
+import { IMAGE_PLACEHOLDERS } from "@/core/constants/images";
 import { useUploadAuthorImage } from "../hooks/use-author";
 
 interface AuthorImageUploadProps {
@@ -79,20 +79,23 @@ export function AuthorImageUpload({
             </div>
           </>
         ) : (
-          <div className="relative flex aspect-square flex-col items-center justify-center gap-y-4 bg-linear-to-br from-10% from-primary-lighter to-30% to-gray-100">
-            <span className="text-center font-semibold text-2xl text-gray-600 leading-6">
-              Photo
-              <br />
-              Unavailable
-            </span>
-            <Button
-              className="absolute translate-y-13 text-xs"
-              onClick={() => fileInputRef.current?.click()}
-              variant="light"
-            >
-              Upload Image
-            </Button>
-          </div>
+          <>
+            <Image
+              alt="Author Photo Placeholder"
+              className="h-full w-full object-cover"
+              fill
+              src={IMAGE_PLACEHOLDERS.AUTHOR_IMAGE}
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+              <button
+                className="cursor-pointer rounded-lg bg-white px-4 py-2 font-medium text-gray-800 text-sm shadow-lg hover:bg-gray-100"
+                onClick={() => fileInputRef.current?.click()}
+                type="button"
+              >
+                Upload Photo
+              </button>
+            </div>
+          </>
         )}
         <input
           accept="image/*"

@@ -10,7 +10,7 @@ export class AuthController {
   @Post('register')
   async register(@Body() request: RegisterDto) {
     return {
-      message: 'Login successfully',
+      message: 'Register successfully',
       result: await this.authService.register(request),
     };
   }
@@ -18,7 +18,7 @@ export class AuthController {
   @Post('/login')
   async login(@Body() request: LoginDto) {
     return {
-      message: 'Register successfully',
+      message: 'Login successfully',
       result: await this.authService.login(request),
     };
   }
