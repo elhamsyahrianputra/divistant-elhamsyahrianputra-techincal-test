@@ -37,7 +37,7 @@ export default function SidebarWrapper({ children }: SidebarWrapperProps) {
         <div className="pt-5 pb-2 pl-7">
           <Link href="/">
             <Image
-              alt="Logo"
+              alt="Spacio Logo"
               height={40}
               src="/img/logo/logo-blue.svg"
               width={40}

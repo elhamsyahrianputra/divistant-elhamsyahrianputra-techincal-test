@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
   return (
@@ -10,10 +11,13 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="mb-4 flex items-center gap-2 font-bold text-primary text-xl">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-bold text-lg text-white">
-                B
-              </div>
-              <span>BookNest</span>
+              <Image
+                alt="Spacio Logo"
+                height={32}
+                src="/img/logo/logo-blue.svg"
+                width={32}
+              />
+              <span>Spacio</span>
             </div>
             <p className="text-gray-600 text-sm">
               Discover your next favorite book and connect with millions of
@@ -142,7 +146,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="flex flex-col items-center justify-between gap-4 border-gray-300 border-t pt-8 md:flex-row">
           <p className="text-gray-600 text-sm">
-            © 2024 BookNest. All rights reserved.
+            © 2024 Spacio. All rights reserved.
           </p>
           <div className="flex gap-6">
             <Link
