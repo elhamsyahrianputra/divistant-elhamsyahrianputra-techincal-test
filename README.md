@@ -4,16 +4,18 @@ Aplikasi pengelolaan koleksi buku dengan fitur CRUD lengkap, autentikasi JWT, da
 
 ## 📋 Table of Contents
 
-- [Fitur](#fitur)
-- [Tech Stack](#tech-stack)
-- [Spesifikasi Project](#spesifikasi-project)
-- [Prerequisites](#prerequisites)
-- [Instalasi & Setup](#instalasi--setup)
-- [Struktur Database](#struktur-database)
-- [API Documentation](#api-documentation)
-- [Sample Credentials](#sample-credentials)
-- [Screenshots](#screenshots)
-- [Deployment](#deployment)
+- [Fitur](#-fitur)
+- [Tech Stack](#-tech-stack)
+- [Spesifikasi Project](#-spesifikasi-project)
+- [Prerequisites](#-prerequisites)
+- [Instalasi & Setup](#-instalasi--setup)
+- [Struktur Database](#-struktur-database)
+- [API Documentation](#-api-documentation)
+- [Sample Credentials](#-sample-credentials)
+- [Deployment](#-deployment)
+- [Project Structure](#-project-structure)
+- [Running Tests](#-running-tests)
+- [Development Notes](#-development-notes)
 
 ## ✨ Fitur
 
@@ -105,7 +107,55 @@ git clone <repository-url>
 cd divistant-elhamsyahrianputra-techincal-test
 ```
 
-### 2. Setup Backend
+### 2. Setup Project (Recommended - dari Root)
+
+Cara tercepat untuk setup semua dependencies sekaligus:
+
+```bash
+# Install dependencies untuk backend dan frontend
+npm install --prefix backend
+npm install --prefix frontend
+
+# Setup backend environment
+cd backend
+cp .env.example .env  # Linux/Mac
+# atau: copy .env.example .env  # Windows
+
+# Setup database & migrations
+npx prisma migrate dev
+npx prisma db seed
+cd ..
+
+# Setup frontend environment
+cd frontend
+# Buat file .env.local dengan isi:
+echo "NEXT_PUBLIC_API_URL=http://localhost:3001" > .env.local  # Linux/Mac
+# atau: echo NEXT_PUBLIC_API_URL=http://localhost:3001 > .env.local  # Windows
+cd ..
+```
+
+### 3. Run Development Servers
+
+**Terminal 1 - Backend:**
+```bash
+cd backend
+npm run start:dev
+```
+Backend akan berjalan di `http://localhost:3001`
+
+**Terminal 2 - Frontend:**
+```bash
+cd frontend
+npm run dev
+```
+Frontend akan berjalan di `http://localhost:3000`
+
+### Alternative: Manual Setup per Folder
+
+Jika prefer setup manual per folder:
+
+<details>
+<summary><b>📦 Setup Backend Manual</b></summary>
 
 ```bash
 cd backend
@@ -129,7 +179,10 @@ npm run start:dev
 
 Backend akan berjalan di `http://localhost:3001`
 
-### 3. Setup Frontend
+</details>
+
+<details>
+<summary><b>🎨 Setup Frontend Manual</b></summary>
 
 ```bash
 cd frontend
@@ -152,6 +205,8 @@ npm run dev
 ```
 
 Frontend akan berjalan di `http://localhost:3000`
+
+</details>
 
 ### 4. Access Application
 
@@ -196,172 +251,129 @@ User ──┬─< UserRole >─ Role
 
 ## 📚 API Documentation
 
-### Authentication Endpoints
+Dokumentasi API lengkap tersedia di file terpisah:
 
-#### POST `/auth/register`
-Register user baru
-```json
-{
-  "name": "string",
-  "email": "string",
-  "password": "string"
-}
-```
+👉 **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)**
 
-#### POST `/auth/login`
-Login dan mendapatkan JWT token
-```json
-{
-  "email": "string",
-  "password": "string"
-}
-```
+Dokumentasi mencakup:
+- Authentication endpoints (register, login, profile)
+- Books CRUD endpoints dengan pagination & filter
+- Authors CRUD endpoints
+- Genres CRUD endpoints
+- Reviews endpoints
+- Request/Response examples lengkap
+- Error handling
+- Authentication flow
+- Pagination
 
-Response:
-```json
-{
-  "access_token": "jwt-token-here",
-  "user": {
-    "id": "string",
-    "name": "string",
-    "email": "string",
-    "roles": ["admin"]
-  }
-}
-```
+**Base URL:** `http://localhost:3001` (development)
 
-### Books Endpoints
-
-#### GET `/books`
-Mendapatkan list semua buku (Public)
-- Query params: `page`, `limit`, `search`, `author`, `genre`
-
-#### GET `/books/:slug`
-Mendapatkan detail buku by slug (Public)
-
-#### POST `/books`
-Membuat buku baru (Protected - Admin only)
-- Content-Type: `multipart/form-data`
-- Body: title, isbn, publisher, publishedAt, pages, description, cover (file)
-
-#### PATCH `/books/:id`
-Update buku (Protected - Admin only)
-
-#### DELETE `/books/:id`
-Delete buku (Protected - Admin only)
-
-### Authors Endpoints
-
-#### GET `/authors`
-Mendapatkan list semua authors (Public)
-
-#### GET `/authors/:slug`
-Mendapatkan detail author by slug (Public)
-
-#### POST `/authors`
-Membuat author baru (Protected - Admin only)
-
-#### PATCH `/authors/:id`
-Update author (Protected - Admin only)
-
-#### DELETE `/authors/:id`
-Delete author (Protected - Admin only)
-
-### Genres Endpoints
-
-#### GET `/genres`
-Mendapatkan list semua genres (Public)
-
-#### GET `/genres/:slug`
-Mendapatkan detail genre by slug (Public)
-
-#### POST `/genres`
-Membuat genre baru (Protected - Admin only)
-
-#### PATCH `/genres/:id`
-Update genre (Protected - Admin only)
-
-#### DELETE `/genres/:id`
-Delete genre (Protected - Admin only)
-
-### Reviews Endpoints
-
-#### GET `/reviews`
-Mendapatkan list reviews (Public)
-
-#### POST `/reviews`
-Membuat review baru (Protected - Authenticated user)
-```json
-{
-  "bookId": "string",
-  "rating": 1-5,
-  "comment": "string"
-}
-```
-
-#### PATCH `/reviews/:id`
-Update review (Protected - Review owner only)
-
-#### DELETE `/reviews/:id`
-Delete review (Protected - Review owner or Admin)
-
-### Authentication Header
-
-Untuk endpoint yang protected, gunakan JWT token di header:
+**Authentication:** Gunakan Bearer token di header:
 ```
 Authorization: Bearer <your-jwt-token>
 ```
 
 ## 🔐 Sample Credentials
 
-### Admin Account
+Database sudah berisi 2 user dengan role berbeda:
+
+### 1. Admin Account
 ```
-Email: admin@bookshelf.com
-Password: admin123
+Email: admin@spacio.com
+Password: password
+Role: admin
 ```
 
-### Regular User Account
+### 2. Member Account
 ```
-Email: user@example.com
-Password: user123
+Email: elhamsyahrianputra@spacio.com
+Password: password
+Role: member
 ```
+
+**Note:** Gunakan account **admin** untuk mengakses fitur CRUD (Create, Update, Delete).
+
+### Dummy Data
 
 Database sudah berisi dummy data untuk:
 - 15+ buku dengan cover images
 - 10+ authors dengan profile images
-- 5+ genres
+- 35+ genres (Fiction, Mystery, Fantasy, dll)
 - Sample reviews dan ratings
 
-## 📸 Screenshots
+##  Deployment
 
-(Tambahkan screenshots aplikasi di sini jika diperlukan)
+**Live Demo:** *(akan diupdate setelah deployment)*
+- **Frontend**: `https://your-app.vercel.app`
+- **Backend API**: `https://your-app.railway.app`
 
-## 🚢 Deployment
+### 📖 Deployment Guide
 
-### Backend Deployment
+Panduan lengkap deployment tersedia di file terpisah:
 
-Backend dapat di-deploy ke platform seperti:
-- Railway
-- Render
-- Fly.io
-- Heroku
+👉 **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)**
 
-Jangan lupa untuk:
-1. Set environment variables
-2. Run migrations: `npx prisma migrate deploy`
-3. Seed database jika diperlukan
+Panduan mencakup:
+- Step-by-step deploy backend ke Railway
+- Step-by-step deploy frontend ke Vercel
+- Konfigurasi environment variables
+- Troubleshooting common issues
+- Alternative deployment options
+- CI/CD setup
 
-### Frontend Deployment
+### Quick Start Deployment
 
-Frontend Next.js dapat di-deploy ke:
-- Vercel (Recommended)
-- Netlify
-- Railway
+Project ini menggunakan monorepo structure, jadi backend dan frontend di-deploy terpisah.
 
-Set environment variable:
-```
-NEXT_PUBLIC_API_URL=<your-backend-url>
-```
+#### 1️⃣ Deploy Backend ke Railway
+
+Railway adalah pilihan terbaik untuk backend karena support SQLite dan gratis.
+
+**Langkah-langkah:**
+1. Buat akun di [Railway.app](https://railway.app)
+2. Klik **"New Project"** → **"Deploy from GitHub repo"**
+3. Pilih repository ini
+4. **Set Root Directory = `backend`** (penting!)
+5. Tambahkan Environment Variables:
+   ```
+   PORT=3001
+   JWT_SECRET=your-super-secret-jwt-key
+   JWT_EXPIRES_IN=24h
+   ```
+6. Railway akan auto-build dan deploy
+7. Copy URL deployment Anda
+
+📖 **Detail lengkap**: Lihat [backend/DEPLOYMENT.md](backend/DEPLOYMENT.md)
+
+#### 2️⃣ Deploy Frontend ke Vercel
+
+Vercel adalah pilihan terbaik untuk Next.js dan gratis unlimited.
+
+**Langkah-langkah:**
+1. Buat akun di [Vercel.com](https://vercel.com)
+2. Klik **"Add New Project"** → Import repository ini
+3. **Set Root Directory = `frontend`** (penting!)
+4. Tambahkan Environment Variable:
+   ```
+   NEXT_PUBLIC_API_URL=https://your-backend-railway-url.railway.app
+   ```
+   ⚠️ Ganti dengan URL Railway backend Anda!
+5. Klik **"Deploy"**
+6. Selesai! Aplikasi sudah live
+
+📖 **Detail lengkap**: Lihat [frontend/DEPLOYMENT.md](frontend/DEPLOYMENT.md)
+
+### Alternative Platforms
+
+- **Backend**: Render, Fly.io, Heroku
+- **Frontend**: Netlify, Cloudflare Pages
+
+### Important Notes
+
+- ⚠️ **SQLite database akan reset** jika Railway instance restart. Untuk production, gunakan PostgreSQL.
+- Free tier Railway: 500 jam/bulan (cukup untuk demo)
+- Free tier Vercel: Unlimited deployments & bandwidth
+- Setiap push ke GitHub akan auto-deploy (CI/CD)
 
 ## 📁 Project Structure
 
@@ -389,21 +401,6 @@ NEXT_PUBLIC_API_URL=<your-backend-url>
 │   └── public/            # Static assets
 │
 └── README.md              # This file
-```
-
-## 🧪 Running Tests
-
-### Backend
-```bash
-cd backend
-npm run test
-npm run test:e2e
-```
-
-### Frontend
-```bash
-cd frontend
-npm run test
 ```
 
 ## 📝 Development Notes

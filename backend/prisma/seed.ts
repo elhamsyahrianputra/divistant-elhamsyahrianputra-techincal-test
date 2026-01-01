@@ -69,7 +69,7 @@ const BOOK_GENRES = [
 async function seedRoles() {
   console.log('🎭 Seeding Roles...');
 
-  const roles = ['superadmin', 'admin', 'member'];
+  const roles = ['admin', 'member'];
 
   for (const roleName of roles) {
     await prisma.role.upsert({
@@ -81,39 +81,20 @@ async function seedRoles() {
     });
   }
 
-  console.log('✅ Roles created: superadmin, admin, member');
+  console.log('✅ Roles created: admin, member');
 }
 
 async function seedUsers() {
   console.log('👥 Seeding Users...');
 
   const roles = await prisma.role.findMany();
-  const superadminRole = roles.find((r) => r.name === 'superadmin');
   const adminRole = roles.find((r) => r.name === 'admin');
   const memberRole = roles.find((r) => r.name === 'member');
 
   // Hash password 'password'
   const hashedPassword = await bcrypt.hash('password', 10);
 
-  // 1. Superadmin
-  const superadmin = await prisma.user.create({
-    data: {
-      name: 'Super Administrator',
-      email: 'superadmin@spacio.com',
-      password: hashedPassword,
-    },
-  });
-
-  await prisma.userRole.create({
-    data: {
-      userId: superadmin.id,
-      roleId: superadminRole!.id,
-    },
-  });
-
-  console.log('✅ Superadmin created: superadmin@spacio.com');
-
-  // 2. Admin
+  // 1. Admin
   const admin = await prisma.user.create({
     data: {
       name: 'Administrator',
@@ -131,7 +112,7 @@ async function seedUsers() {
 
   console.log('✅ Admin created: admin@spacio.com');
 
-  // 3. Elham Syahrian Putra
+  // 2. Elham Syahrian Putra
   const elham = await prisma.user.create({
     data: {
       name: 'Elham Syahrian Putra',
@@ -149,7 +130,7 @@ async function seedUsers() {
 
   console.log('✅ Member created: elhamsyahrianputra@spacio.com');
 
-  // 4. Random Members (150 members untuk bisa generate 1000 reviews)
+  // 3. Random Members (150 members untuk bisa generate 1000 reviews)
   const memberUsers: any[] = [];
   for (let i = 0; i < 150; i++) {
     const user = await prisma.user.create({
